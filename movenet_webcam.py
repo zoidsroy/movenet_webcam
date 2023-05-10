@@ -1,20 +1,36 @@
-import tensorflow as tf
+#######################引入函式庫#######################
+
+
+import tensorflow as tf 
 import tensorflow_hub as hub
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 
+
+#######################啟用tensorflow的gpu模式#######################
+
+
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
 
+#######################載入movenet的多人姿勢偵測模型#######################
+
+
 model = hub.load("https://tfhub.dev/google/movenet/multipose/lightning/1")
 movenet = model.signatures['serving_default']
+
+#######################定義繪圖顯示的函數#######################
+
 
 def loop_through_people(frame, keypoints_with_scores, edges, confidence_threshold):
     for person in keypoints_with_scores:
         draw_connections(frame, person, edges, confidence_threshold)
         draw_keypoints(frame, person, confidence_threshold)
+
+#######################畫點#######################
+
 
 def draw_keypoints(frame, keypoints, confidence_threshold):
     y, x, c = frame.shape
@@ -24,6 +40,9 @@ def draw_keypoints(frame, keypoints, confidence_threshold):
         ky, kx, kp_conf = kp
         if kp_conf > confidence_threshold:
             cv2.circle(frame, (int(kx), int(ky)), 6, (0,255,0), -1)
+
+#######################畫線#######################
+
 
 def draw_connections(frame, keypoints, edges, confidence_threshold):
     y, x, c = frame.shape
@@ -57,7 +76,7 @@ EDGES = {
     (12, 14): 'c',
     (14, 16): 'c'
 }
-
+#######################開啟webcam#######################
 
 cap = cv2.VideoCapture(1)
 while cap.isOpened():
@@ -81,3 +100,6 @@ while cap.isOpened():
         break
 cap.release()
 cv2.destroyAllWindows()
+
+
+
