@@ -78,7 +78,7 @@ EDGES = {
 }
 #######################開啟webcam#######################
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 while cap.isOpened():
     ret, frame = cap.read()
     
